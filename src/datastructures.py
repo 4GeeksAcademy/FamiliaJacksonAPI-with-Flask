@@ -9,9 +9,6 @@ update this file to implement the following already declared methods:
 from random import randint
 
 class FamilyStructure:
- #__init__: Inicializa la estructura familiar con un apellido, 
- # un ID siguiente y una lista de miembros predeterminados.
-   
     def __init__(self, apellido):
         self.apellido = apellido
         self._siguiente_id = 1
@@ -21,14 +18,11 @@ class FamilyStructure:
             {"id": self._generar_id(), "primer_nombre": "Jimmy", "apellido": apellido, "edad": 5, "numeros_de_suerte": [1]}
         ]
 
-#Genera un nuevo ID para un miembro.
     def _generar_id(self):
         id_generado = self._siguiente_id
         self._siguiente_id += 1
         return id_generado
-    
 
-#Agrega un nuevo miembro a la lista si incluye el nombre, la edad y los números de suerte.
     def agregar_miembro(self, miembro):
         if "primer_nombre" in miembro and "edad" in miembro and "numeros_de_suerte" in miembro:
             miembro["id"] = self._generar_id()
@@ -42,15 +36,13 @@ class FamilyStructure:
             if miembro["id"] == id:
                 self._miembros.remove(miembro)
                 return {"hecho": True}
-        return None
+        return {"error": "Miembro no encontrado"}
 
-#Obtiene un miembro específico basado en el ID.
     def obtener_miembro(self, id):
         for miembro in self._miembros:
             if miembro["id"] == id:
                 return miembro
         return None
     
-# Devuelve la lista completa de miembros.
     def obtener_todos_los_miembros(self):
         return self._miembros
