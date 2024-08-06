@@ -9,28 +9,48 @@ update this file to implement the following already declared methods:
 from random import randint
 
 class FamilyStructure:
-    def __init__(self, last_name):
-        self.last_name = last_name
+ #__init__: Inicializa la estructura familiar con un apellido, 
+ # un ID siguiente y una lista de miembros predeterminados.
+   
+    def __init__(self, apellido):
+        self.apellido = apellido
+        self._siguiente_id = 1
+        self._miembros = [
+            {"id": self._generar_id(), "primer_nombre": "John", "apellido": apellido, "edad": 33, "numeros_de_suerte": [7, 13, 22]},
+            {"id": self._generar_id(), "primer_nombre": "Jane", "apellido": apellido, "edad": 35, "numeros_de_suerte": [10, 14, 3]},
+            {"id": self._generar_id(), "primer_nombre": "Jimmy", "apellido": apellido, "edad": 5, "numeros_de_suerte": [1]}
+        ]
 
-        # example list of members
-        self._members = []
+#Genera un nuevo ID para un miembro.
+    def _generar_id(self):
+        id_generado = self._siguiente_id
+        self._siguiente_id += 1
+        return id_generado
+    
 
-    # read-only: Use this method to generate random members ID's when adding members into the list
-    def _generateId(self):
-        return randint(0, 99999999)
+#Agrega un nuevo miembro a la lista si incluye el nombre, la edad y los números de suerte.
+    def agregar_miembro(self, miembro):
+        if "primer_nombre" in miembro and "edad" in miembro and "numeros_de_suerte" in miembro:
+            miembro["id"] = self._generar_id()
+            miembro["apellido"] = self.apellido
+            self._miembros.append(miembro)
+            return miembro
+        return None
 
-    def add_member(self, member):
-        # fill this method and update the return
-        pass
+    def eliminar_miembro(self, id):
+        for miembro in self._miembros:
+            if miembro["id"] == id:
+                self._miembros.remove(miembro)
+                return {"hecho": True}
+        return None
 
-    def delete_member(self, id):
-        # fill this method and update the return
-        pass
-
-    def get_member(self, id):
-        # fill this method and update the return
-        pass
-
-    # this method is done, it returns a list with all the family members
-    def get_all_members(self):
-        return self._members
+#Obtiene un miembro específico basado en el ID.
+    def obtener_miembro(self, id):
+        for miembro in self._miembros:
+            if miembro["id"] == id:
+                return miembro
+        return None
+    
+# Devuelve la lista completa de miembros.
+    def obtener_todos_los_miembros(self):
+        return self._miembros

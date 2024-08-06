@@ -12,33 +12,43 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 CORS(app)
 
-# create the jackson family object
-jackson_family = FamilyStructure("Jackson")
+# Crear el objeto de la familia Jackson
+familia_jackson = FamilyStructure("Jackson")
 
-# Handle/serialize errors like a JSON object
-@app.errorhandler(APIException)
-def handle_invalid_usage(error):
-    return jsonify(error.to_dict()), error.status_code
-
-# generate sitemap with all your endpoints
-@app.route('/')
-def sitemap():
-    return generate_sitemap(app)
-
+# Obtén todos los miembros de la familia.
 @app.route('/members', methods=['GET'])
-def handle_hello():
+def obtener_miembros():
+    miembros = familia_jackson.obtener_todos_los_miembros()
+    return jsonify(miembros), 200
 
-    # this is how you can use the Family datastructure by calling its methods
-    members = jackson_family.get_all_members()
-    response_body = {
-        "hello": "world",
-        "family": members
-    }
+#Recupera un miembro específico de la familia por su ID.
+@app.route('/member/<int:miembro_id>', methods=['GET'])
+def obtener_miembro(miembro_id):
+    miembro = familia_jackson.obtener_miembro(miembro_id)
+    if miembro:
+        return jsonify(miembro), 200
+    return jsonify({"error": "Miembro no encontrado"}), 404
 
 
-    return jsonify(response_body), 200
+#Añade un nuevo miembro a la familia.
+@app.route('/member', methods=['POST'])
+def agregar_miembro():
+    datos = request.json
+    nuevo_miembro = familia_jackson.agregar_miembro(datos)
+    if nuevo_miembro:
+        return jsonify(nuevo_miembro), 201
+    return jsonify({"error": "Datos inválidos, debe incluir primer_nombre, edad y numeros_de_suerte"}), 400
 
-# this only runs if `$ python src/app.py` is executed
+
+# Elimina un miembro de la familia por su ID.
+@app.route('/member/<int:miembro_id>', methods=['DELETE'])
+def eliminar_miembro(miembro_id):
+    resultado = familia_jackson.eliminar_miembro(miembro_id)
+    if resultado:
+        return jsonify({"hecho": True}), 200
+    return jsonify({"error": "Miembro no encontrado"}), 404
+
+# Iniciar la aplicación si se ejecuta directamente el script
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
     app.run(host='0.0.0.0', port=PORT, debug=True)
