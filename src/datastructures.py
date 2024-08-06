@@ -35,7 +35,7 @@ class FamilyStructure:
         for miembro in self._miembros:
             if miembro["id"] == id:
                 self._miembros.remove(miembro)
-                return {"hecho": True}
+                return {"done": True}
         return {"error": "Miembro no encontrado"}
 
     def obtener_miembro(self, id):
